@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LỰA CHỌN PHƯƠNG ÁN THỰC HÀNH ĐO GIA TỐC TRỌNG TRƯỜNG</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #f7faff, #e9f1ff);
+      color: #333;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    header {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    h1 {
+      color: #0055cc;
+      margin: 5px 0 10px;
+    }
+
+    h3 {
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    form {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin: 15px;
+      width: 320px;
+    }
+
+    select, input, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .btn-secondary {
+      background: #aaa;
+    }
+
+    .btn-info {
+      background: #28a745;
+    }
+
+    .btn-info:hover {
+      background: #1c7a34;
+    }
+
+    .groups {
+      width: 90%;
+      max-width: 700px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin-bottom: 40px;
+    }
+
+    .group {
+      margin-bottom: 15px;
+    }
+
+    .group h3 {
+      background: #e9f3ff;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    /* 💎 Phần hiển thị nhóm của tôi đẹp hơn */
+    #myGroupResult {
+      background: linear-gradient(135deg, #e0f7e9, #c2e9fb);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+      width: 340px;
+      display: none;
+      margin-bottom: 20px;
+      text-align: center;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    #myGroupResult h3 {
+      color: #006400;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    #myGroupResult p {
+      background: white;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+      color: #333;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>LỰA CHỌN PHƯƠNG ÁN THỰC HÀNH ĐO GIA TỐC TRỌNG TRƯỜNG</h1>
+    <h3>LỚP VẬT LÍ 10 H123</h3>
+  </header>
+
+  <form id="surveyForm">
+    <label>Họ và tên:</label>
+    <input type="text" id="name" required placeholder="Nhập tên của bạn">
+
+    <label>Chọn chủ đề:</label>
+    <select id="choice" required>
+      <option value="">-- Chọn một phương án --</option>
+      <option>1. Con lắc đơn</option>
+      <option>2. Đo thời gian vật rơi tự do</option>
+      <option>3. Đo vận tốc</option>
+      <option>4. Dao động của con lắc lò xo</option>
+      <option>5. Con lắc vật lí</option>
+      <option>6. Con lắc đảo ngược</option>
+      <option>7. Phân tích hoạt nghiệm</option>
+      <option>8. Dùng cảm biến gia tốc</option>
+      <option>9. Con lắc nước</option>
+      <option>10. Cảm biến áp suất</option>
+      <option>11. Dao động con quay</option>
+      <option>12. Con lắc xoắn</option>
+    </select>
+
+    <button type="submit">✅ Gửi lựa chọn</button>
+  </form>
+
+  <div class="actions">
+    <button id="myGroupBtn" class="btn-info">🔍 Xem nhóm của tôi</button>
+    <button id="exportBtn">📥 Xuất Excel</button>
+    <button id="clearBtn" class="btn-secondary">🗑 Xóa dữ liệu</button>
+  </div>
+
+  <div id="myGroupResult"></div>
+
+  <div class="groups" id="groupsDisplay">
+    <h2>Kết quả ghép nhóm</h2>
+    <p>Chưa có dữ liệu...</p>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+    const form = document.getElementById("surveyForm");
+    const groupsDisplay = document.getElementById("groupsDisplay");
+    const clearBtn = document.getElementById("clearBtn");
+    const exportBtn = document.getElementById("exportBtn");
+    const myGroupBtn = document.getElementById("myGroupBtn");
+    const myGroupResult = document.getElementById("myGroupResult");
+
+    let participants = JSON.parse(localStorage.getItem("participants") || "[]");
+
+    function updateGroups() {
+      if (participants.length === 0) {
+        groupsDisplay.innerHTML = "<h2>Kết quả ghép nhóm</h2><p>Chưa có dữ liệu...</p>";
+        return;
+      }
+
+      const groups = {};
+      participants.forEach(p => {
+        if (!groups[p.choice]) groups[p.choice] = [];
+        groups[p.choice].push(p.name);
+      });
+
+      let html = "<h2>Kết quả ghép nhóm</h2>";
+      Object.keys(groups).forEach(choice => {
+        html += `<div class='group'><h3>${choice}</h3><p>${groups[choice].join(", ")}</p></div>`;
+      });
+      groupsDisplay.innerHTML = html;
+    }
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const name = document.getElementById("name").value.trim();
+      const choice = document.getElementById("choice").value;
+      if (!name || !choice) return alert("Vui lòng nhập đầy đủ thông tin!");
+      participants.push({ name, choice });
+      localStorage.setItem("participants", JSON.stringify(participants));
+      updateGroups();
+      form.reset();
+      alert("✅ Đã lưu lựa chọn!");
+    });
+
+    clearBtn.addEventListener("click", () => {
+      if (confirm("Bạn có chắc muốn xóa toàn bộ dữ liệu không?")) {
+        participants = [];
+        localStorage.removeItem("participants");
+        updateGroups();
+        myGroupResult.style.display = "none";
+      }
+    });
+
+    exportBtn.addEventListener("click", () => {
+      if (participants.length === 0) return alert("Không có dữ liệu để xuất!");
+      const groups = {};
+      participants.forEach(p => {
+        if (!groups[p.choice]) groups[p.choice] = [];
+        groups[p.choice].push(p.name);
+      });
+      const sheetData = [["Chủ đề", "Danh sách thành viên"]];
+      Object.keys(groups).forEach(choice => {
+        sheetData.push([choice, groups[choice].join(", ")]);
+      });
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.aoa_to_sheet(sheetData);
+      XLSX.utils.book_append_sheet(wb, ws, "Kết quả");
+      XLSX.writeFile(wb, "ketqua_ghepnhom.xlsx");
+    });
+
+    myGroupBtn.addEventListener("click", () => {
+      const name = prompt("Nhập tên của bạn để xem nhóm:");
+      if (!name) return;
+      const member = participants.find(p => p.name.toLowerCase() === name.trim().toLowerCase());
+      if (!member) {
+        alert("❌ Không tìm thấy tên trong danh sách!");
+        return;
+      }
+      const groupMembers = participants.filter(p => p.choice === member.choice).map(p => p.name);
+      myGroupResult.style.display = "block";
+      myGroupResult.innerHTML = `
+        <h3>🔹 Nhóm của bạn: <b>${member.choice}</b></h3>
+        <p><b>Thành viên:</b><br>${groupMembers.join("<br>")}</p>
+      `;
+      myGroupResult.scrollIntoView({ behavior: "smooth" });
+    });
+
+    updateGroups();
+  </script>
+</body>
+</html>
